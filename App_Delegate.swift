@@ -27,20 +27,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             object: NSWorkspace.shared,
             queue: .main
         ) { _ in
-            self.moveApplicationToForeground()
-        }
-        
-        moveApplicationToForeground()
-    }
-    
-    func moveApplicationToForeground () {
-        if let window = NSApplication.shared.windows.first {
-            print("space changed")
-            // Window moved to a different space
-            window.orderFrontRegardless()
-        } else {
-            print("No window found")
-            return
+            if let window = NSApplication.shared.windows.first {
+                print("space changed")
+                // Window moved to a different space
+                window.orderFrontRegardless()
+            } else {
+                print("No window found")
+                return
+            }
         }
     }
 }
