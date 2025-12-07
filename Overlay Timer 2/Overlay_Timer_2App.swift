@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct Overlay_TimerApp: App {
-//    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var timerModel = TimerModel(offset: 1*1000)
     @Environment(\.scenePhase) var scenePhase
     
@@ -26,7 +26,7 @@ struct Overlay_TimerApp: App {
     }
     
     var body: some Scene {
-        WindowGroup {
+        Window("Timer", id: "timer") {
             HStack {
                 Text("\(times[0]):\(times[1]):\(times[2])")
             }
