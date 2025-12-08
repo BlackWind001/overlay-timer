@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C2210B412EE5B0A100CF6A89 /* TimerContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2210B402EE5B0A100CF6A89 /* TimerContentView.swift */; };
+		C2210B432EE5CA5A00CF6A89 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2210B422EE5CA5A00CF6A89 /* EditableText.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		C2210B132EE595B000CF6A89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +32,8 @@
 		C2210B042EE595AE00CF6A89 /* Overlay Timer 2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Overlay Timer 2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2210B122EE595B000CF6A89 /* Overlay Timer 2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Overlay Timer 2Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2210B1C2EE595B000CF6A89 /* Overlay Timer 2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Overlay Timer 2UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2210B402EE5B0A100CF6A89 /* TimerContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerContentView.swift; sourceTree = "<group>"; };
+		C2210B422EE5CA5A00CF6A89 /* EditableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableText.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +82,8 @@
 		C2210AFB2EE595AE00CF6A89 = {
 			isa = PBXGroup;
 			children = (
+				C2210B422EE5CA5A00CF6A89 /* EditableText.swift */,
+				C2210B402EE5B0A100CF6A89 /* TimerContentView.swift */,
 				C2210B062EE595AE00CF6A89 /* Overlay Timer 2 */,
 				C2210B152EE595B000CF6A89 /* Overlay Timer 2Tests */,
 				C2210B1F2EE595B000CF6A89 /* Overlay Timer 2UITests */,
@@ -236,6 +245,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2210B412EE5B0A100CF6A89 /* TimerContentView.swift in Sources */,
+				C2210B432EE5CA5A00CF6A89 /* EditableText.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

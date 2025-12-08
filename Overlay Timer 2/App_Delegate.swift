@@ -7,56 +7,55 @@
 
 import Foundation
 import Cocoa
+import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        
-        // CRITICAL: Delay to let SwiftUI fully initialize the window
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.configureWindow()
-        }
-    }
+    private var panel: NSPanel?
     
-    private func configureWindow() {
-        guard let window = NSApplication.shared.windows.first else {
-            print("❌ Warning: No window found")
-            return
-        }
-        
-        // Set activation policy first
+    func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         
-        // Configure window
-        window.level = NSWindow.Level(Int(CGWindowLevelForKey(.floatingWindow)))
+        // Create NSPanel from scratch
+        let panel = NSPanel(
+            contentRect: NSRect(x: 100, y: 100, width: 300, height: 150),
+            styleMask: [
+                .titled,
+                .closable,
+                .nonactivatingPanel,
+                .resizable
+            ],
+            backing: .buffered,
+            defer: false
+        )
         
-        window.collectionBehavior = [
+        // Embed SwiftUI content
+        let hostingController = NSHostingController(rootView: TimerContentView())
+        panel.contentViewController = hostingController
+        
+        // Configure for floating + draggable
+        panel.level = NSWindow.Level(Int(CGWindowLevelForKey(.floatingWindow)))
+        panel.collectionBehavior = [
             .canJoinAllSpaces,
             .fullScreenAuxiliary,
             .canJoinAllApplications
         ]
+        panel.isMovableByWindowBackground = true  // ← WORKS with NSPanel
+        panel.backgroundColor = NSColor.windowBackgroundColor
+        panel.isOpaque = false
         
-        window.isMovableByWindowBackground = true
-        
-        // Position on current screen (fixes the negative coordinate issue)
+        // Position on main screen
         if let screen = NSScreen.main {
             let screenFrame = screen.visibleFrame
-            let windowSize = window.frame.size
             let centeredFrame = NSRect(
-                x: screenFrame.midX - windowSize.width / 2,
-                y: screenFrame.midY - windowSize.height / 2,
-                width: windowSize.width,
-                height: windowSize.height
+                x: screenFrame.midX - 150,
+                y: screenFrame.midY - 75,
+                width: 300,
+                height: 150
             )
-            window.setFrame(centeredFrame, display: true, animate: false)
+            panel.setFrame(centeredFrame, display: true)
         }
         
-        // Make it key and visible
-        window.makeKeyAndOrderFront(nil)
-        
-        // Force to current space AFTER everything is set up
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            NSApp.activate(ignoringOtherApps: false)
-        }
+        panel.makeKeyAndOrderFront(nil)
+        self.panel = panel
     }
 }
-
