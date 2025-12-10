@@ -9,45 +9,64 @@ import SwiftUI
 
 struct TimerContentView: View {
     @StateObject var timerModel = TimerModel(offset: 30000)
+    @State private var isTimerRunning: Bool = false
     
     var times: Binding<[String]> {
-        let totalSeconds = timerModel.offset / 1000
-        let hours = totalSeconds / 3600
-        let minutes = (totalSeconds % 3600) / 60
-        let seconds = totalSeconds % 60
         return Binding(
             get: {
-                [
-                    String(format: "%02d", hours),
-                    String(format: "%02d", minutes),
-                    String(format: "%02d", seconds)
-                ]
-            }, set: {newValue in
-                
-            }
+                let x = calcTimeFromOffset(offset: timerModel.offset)
+                return x
+            }, set: { _ in }
         )
     }
     
     func handleEdit (isEditing: Bool) {
-        
+        timerModel.pauseTimer()
+        isTimerRunning = false
     }
     
-    func validateHours (input: String) -> Bool {
-        if (!input.isEmpty) {
-            if let value = Int(input) {
-                if (value >= 0 && value <= 23) {
-                    return true
-                }
+    // When the input is changed, validate the input
+    // If not valid, return false.
+    // If valid, update the timer offset
+    func handleHChange (input: String) -> Bool {
+        if let value = Int(input) {
+            if validateH(value: value) {
+                return true
             }
+            
+            timerModel.setOffset(offset: getNewOffsetFromOld_H(newH: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
         }
         
         return false
     }
     
-    func submitHours (input: String) -> Void {
+    func handleMChange (input: String) -> Bool {
         if let value = Int(input) {
-            let totalSeconds = timerModel.offset / 1000
-            let newOffset = (value * 3600) + ((totalSeconds % 3600))
+            if validateM(value: value) {
+                return true
+            }
+            
+            timerModel.setOffset(offset: getNewOffsetFromOld_M(newM: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
+        }
+        
+        return false
+    }
+    
+    func handleSChange (input: String) -> Bool {
+        if let value = Int(input) {
+            if validateS(value: value) {
+                return true
+            }
+            
+            timerModel.setOffset(offset: getNewOffsetFromOld_S(newS: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
+        }
+        
+        return false
+    }
+    
+    func handleSubmitH (input: String) {
+        if let value = Int(input) {
+            let newOffset = getNewOffsetFromOld_H(newH: value, oldHMS: getHMSFromOffset(offset: timerModel.offset))
             
             timerModel.setOffset(offset: newOffset)
         }
@@ -56,40 +75,70 @@ struct TimerContentView: View {
         }
     }
     
-    func validateMinutes (input: String) -> Bool {
-        if (!input.isEmpty) {
-            if let value = Int(input) {
-                if (value >= 0 && value <= 59) {
-                    return true
-                }
-            }
+    func handleSubmitM (input: String) {
+        if let value = Int(input) {
+            let newOffset = getNewOffsetFromOld_M(newM: value, oldHMS: getHMSFromOffset(offset: timerModel.offset))
+            
+            timerModel.setOffset(offset: newOffset)
         }
-        return false
+        else {
+            print("Impossible condition reached")
+        }
     }
     
-    func validateSeconds (input: String) -> Bool {
-        if (!input.isEmpty) {
-            if let value = Int(input) {
-                if (value >= 0 && value <= 59) {
-                    return true
-                }
-            }
+    func handleSubmitS (input: String) {
+        if let value = Int(input) {
+            let newOffset = getNewOffsetFromOld_S(newS: value, oldHMS: getHMSFromOffset(offset: timerModel.offset))
+            
+            timerModel.setOffset(offset: newOffset)
         }
-        return false
+        else {
+            print("Impossible condition reached")
+        }
+    }
+    
+    func handleToggle () {
+        if isTimerRunning {
+            timerModel.pauseTimer()
+        }
+        else {
+            timerModel.startTimer()
+        }
+        
+        isTimerRunning.toggle()
     }
     
     var body: some View {
-        HStack {
-            EditableText(onValidate: validateHours, text: times[0])
-            Text(":")
-            EditableText(onValidate: validateMinutes, text: times[1])
-            Text(":")
-            EditableText(onValidate: validateSeconds, text: times[2])
+        VStack {
+            HStack {
+                EditableText(
+                    onChange: handleHChange,
+                    onSubmit: handleSubmitH, onEdit: handleEdit, text: times[0]
+                )
+                Text(":")
+                EditableText(
+                    onChange: handleMChange,
+                    onSubmit: handleSubmitM, onEdit: handleEdit, text: times[1]
+                )
+                Text(":")
+                EditableText(
+                    onChange: handleSChange,
+                    onSubmit: handleSubmitS, onEdit: handleEdit, text: times[2]
+                )
+            }
+            .frame(minWidth: 300, minHeight: 100)
+            .font(.system(size: 48, weight: .bold))
+            .onChange(of: timerModel.offset) { _ in
+                
+            }
+            Button(action: {
+                handleToggle()
+            }, label: {
+                Image(systemName: isTimerRunning ? "pause.fill" : "play.fill")
+                    .font(.system(size: 32))
+                    .foregroundColor(.white)
+            })
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .font(.system(size: 48, weight: .bold))
-        .onAppear {
-            timerModel.startTimer()
-        }
     }
 }

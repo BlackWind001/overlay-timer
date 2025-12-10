@@ -17,7 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Create NSPanel from scratch
         let panel = NSPanel(
-            contentRect: NSRect(x: 100, y: 100, width: 300, height: 150),
+            contentRect: NSRect(x: 100, y: 100, width: 300, height: 200),
             styleMask: [
                 .titled,
                 .closable,
@@ -50,7 +50,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 x: screenFrame.midX - 150,
                 y: screenFrame.midY - 75,
                 width: 300,
-                height: 150
+                height: 200
             )
             panel.setFrame(centeredFrame, display: true)
         }
