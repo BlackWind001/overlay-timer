@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TimerContentView: View {
-    @StateObject var timerModel = TimerModel(offset: 30000)
+    @StateObject var timerModel = TimerModel(offset: (25 * 60 * 1000))
     @State private var isTimerRunning: Bool = false
     @State private var editStates: [Bool] = [false, false, false]
     
@@ -162,5 +162,6 @@ struct TimerContentView: View {
             })
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(timerModel.offset <= 0 ? Color.teal : Color(NSColor.windowBackgroundColor))
     }
 }
