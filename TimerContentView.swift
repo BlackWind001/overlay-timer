@@ -10,6 +10,7 @@ import SwiftUI
 struct TimerContentView: View {
     @StateObject var timerModel = TimerModel(offset: 30000)
     @State private var isTimerRunning: Bool = false
+    @State private var editStates: [Bool] = [false, false, false]
     
     var times: Binding<[String]> {
         return Binding(
@@ -20,48 +21,52 @@ struct TimerContentView: View {
         )
     }
     
-    func handleEdit (isEditing: Bool) {
+    func resetEditStates () {
+        editStates = [false, false, false]
+    }
+    
+    func handleEdit () {
         timerModel.pauseTimer()
         isTimerRunning = false
+    }
+    
+    func handleEditH (isEditing: Bool) {
+        handleEdit()
+        editStates[0] = isEditing
+    }
+    
+    func handleEditM (isEditing: Bool) {
+        handleEdit()
+        editStates[1] = isEditing
+    }
+    
+    func handleEditS (isEditing: Bool) {
+        handleEdit()
+        editStates[2] = isEditing
     }
     
     // When the input is changed, validate the input
     // If not valid, return false.
     // If valid, update the timer offset
-    func handleHChange (input: String) -> Bool {
-        if let value = Int(input) {
-            if validateH(value: value) {
-                return true
-            }
-            
-            timerModel.setOffset(offset: getNewOffsetFromOld_H(newH: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
-        }
-        
-        return false
+    func handleHChange (input: String) -> String {
+        var value = Int(input) ?? 0
+        value = validateH(value: value) ? value : 0
+        timerModel.setOffset(offset: getNewOffsetFromOld_H(newH: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
+        return String(format: "%02d", getHMSFromOffset(offset: timerModel.offset).H)
     }
     
-    func handleMChange (input: String) -> Bool {
-        if let value = Int(input) {
-            if validateM(value: value) {
-                return true
-            }
-            
-            timerModel.setOffset(offset: getNewOffsetFromOld_M(newM: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
-        }
-        
-        return false
+    func handleMChange (input: String) -> String {
+        var value = Int(input) ?? 0
+        value = validateM(value: value) ? value : 0
+        timerModel.setOffset(offset: getNewOffsetFromOld_M(newM: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
+        return String(format: "%02d", getHMSFromOffset(offset: timerModel.offset).M)
     }
     
-    func handleSChange (input: String) -> Bool {
-        if let value = Int(input) {
-            if validateS(value: value) {
-                return true
-            }
-            
-            timerModel.setOffset(offset: getNewOffsetFromOld_S(newS: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
-        }
-        
-        return false
+    func handleSChange (input: String) -> String {
+        var value = Int(input) ?? 0
+        value = validateM(value: value) ? value : 0
+        timerModel.setOffset(offset: getNewOffsetFromOld_S(newS: value, oldHMS: getHMSFromOffset(offset: timerModel.offset)))
+        return String(format: "%02d", getHMSFromOffset(offset: timerModel.offset).S)
     }
     
     func handleSubmitH (input: String) {
@@ -69,6 +74,7 @@ struct TimerContentView: View {
             let newOffset = getNewOffsetFromOld_H(newH: value, oldHMS: getHMSFromOffset(offset: timerModel.offset))
             
             timerModel.setOffset(offset: newOffset)
+            resetEditStates()
         }
         else {
             print("Impossible condition reached")
@@ -80,6 +86,7 @@ struct TimerContentView: View {
             let newOffset = getNewOffsetFromOld_M(newM: value, oldHMS: getHMSFromOffset(offset: timerModel.offset))
             
             timerModel.setOffset(offset: newOffset)
+            resetEditStates()
         }
         else {
             print("Impossible condition reached")
@@ -91,6 +98,7 @@ struct TimerContentView: View {
             let newOffset = getNewOffsetFromOld_S(newS: value, oldHMS: getHMSFromOffset(offset: timerModel.offset))
             
             timerModel.setOffset(offset: newOffset)
+            resetEditStates()
         }
         else {
             print("Impossible condition reached")
@@ -98,6 +106,11 @@ struct TimerContentView: View {
     }
     
     func handleToggle () {
+        
+        // ToDo: Check error states of the different inputs
+        // If any one of them is in error state, do not start timer
+        resetEditStates()
+        
         if isTimerRunning {
             timerModel.pauseTimer()
         }
@@ -113,17 +126,26 @@ struct TimerContentView: View {
             HStack {
                 EditableText(
                     onChange: handleHChange,
-                    onSubmit: handleSubmitH, onEdit: handleEdit, text: times[0]
+                    onSubmit: handleSubmitH,
+                    onEdit: handleEditH,
+                    text: times[0],
+                    isEditing: $editStates[0]
                 )
                 Text(":")
                 EditableText(
                     onChange: handleMChange,
-                    onSubmit: handleSubmitM, onEdit: handleEdit, text: times[1]
+                    onSubmit: handleSubmitM,
+                    onEdit: handleEditM,
+                    text: times[1],
+                    isEditing: $editStates[1]
                 )
                 Text(":")
                 EditableText(
                     onChange: handleSChange,
-                    onSubmit: handleSubmitS, onEdit: handleEdit, text: times[2]
+                    onSubmit: handleSubmitS,
+                    onEdit: handleEditS,
+                    text: times[2],
+                    isEditing: $editStates[2]
                 )
             }
             .frame(minWidth: 300, minHeight: 100)
