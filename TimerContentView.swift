@@ -162,6 +162,6 @@ struct TimerContentView: View {
             })
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(timerModel.offset <= 0 ? Color.teal : Color(NSColor.windowBackgroundColor))
+        .background(timerModel.offset <= 0 ? Color.green : Color.teal)
     }
 }
